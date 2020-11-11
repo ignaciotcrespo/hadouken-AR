@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="Cache-Control" content="no-cache">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <title>Hadouken WebGL</title>
+    <meta name="description" content="Hadouken AR WebGL.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hadouken AR WebGL">
+    <meta property="og:description" content="Hadouken AR WebGL.">
+
+    <script type="text/javascript" src="./scripts/dat.gui.min.js"></script>
+    <link rel="stylesheet" href="./css/controls1.css"/>
+    <link rel="stylesheet" href="./css/controls2.css"/>
+    <link rel="stylesheet" href="./css/fluid.css"/>
+    <link rel="stylesheet" href="./css/hadouken.css"/>
+
+    <script src="./scripts/ga.js"></script>
+
+</head>
+<body data-new-gr-c-s-check-loaded="14.983.0">
+
+<div class="box">
+    <div id="webCameraLayer" style="z-index: 1; position: absolute; top: 0px; left: 0px; opacity:0;" class="box">
+        <div id="container">
+            <video autoplay="true" id="videoElement" class="boxContainer"></video>
+        </div>
+    </div>
+
+    <div id="handsRenderLayer" style="z-index: 2; position: absolute; top: 0px; left: 0px;" class="box">
+        <canvas id="canvasHands" class="boxContainer"></canvas>
+    </div>
+
+    <div id="darkTransparentLayer" style="z-index:3; position: absolute; top: 0px; left: 0px;" class="box">
+        <div style="background: #000000;" class="boxContainer"></div>
+    </div>
+    <div id="liquidLayer" style="z-index: 5; position: absolute; top: 0px; left: 0px;" class="box">
+        <canvas id="canvas_liquid" class="boxContainer"></canvas>
+    </div>
+</div>
+
+<script src="./scripts/fluid.js"></script>
+<script src="./scripts/hadouken.js"></script>
+<script src="./scripts/menu.js"></script>
+<script src="./scripts/handtrack.min.js"></script>
+
+
+</body>
+</html>

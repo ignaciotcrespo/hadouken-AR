@@ -1,0 +1,9 @@
+.boxContainer {
+    width: 100%;
+    height: 100%;
+}
+.box {
+    // this is changed programmatically, dont touch. Check setup in hadouken.js
+    width: 75%;
+    height: 100%;
+}
