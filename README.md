@@ -8,10 +8,11 @@ For instance, the elbows are also detected, works better if your elbow is not vi
 
 Still a work in progress, but fun enough to give a try ;)
 
-[Live demo here](https://ignaciotcrespo.github.io/hadouken-ar/)
+[Live demo here: Engine 2](https://ignaciotcrespo.github.io/hadouken-AR-engine2/)
+
+[Live demo here: Engine 1](https://ignaciotcrespo.github.io/hadouken-ar/)
 
 ### Some video samples:
-
 
 #### Using hands detection engine 2
 
