@@ -27,7 +27,6 @@ SOFTWARE.
 // Simulation code
 
 var canvas = document.getElementById('canvas_liquid');
-resizeCanvas();
 
 var config = {
     SIM_RESOLUTION: 128,
@@ -72,21 +71,10 @@ function pointerPrototype () {
 
 var pointers = [];
 var splatStack = [];
-pointers.push(new pointerPrototype());
 
 var ref = getWebGLContext(canvas);
 var gl = ref.gl;
 var ext = ref.ext;
-
-if (isMobile()) {
-    config.DYE_RESOLUTION = 512;
-}
-if (!ext.supportLinearFiltering) {
-    config.DYE_RESOLUTION = 512;
-    config.SHADING = false;
-    config.BLOOM = false;
-    config.SUNRAYS = false;
-}
 
 function getWebGLContext (canvas) {
     var params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
@@ -603,13 +591,8 @@ function updateKeywords () {
     displayMaterial.setKeywords(displayKeywords);
 }
 
-updateKeywords();
-initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
-
 var lastUpdateTime = Date.now();
 var colorUpdateTimer = 0.0;
-update();
 
 function update () {
     var dt = calcDeltaTime();
@@ -922,11 +905,15 @@ canvas.addEventListener('mousedown', function (e) {
 });
 
 canvas.addEventListener('mousemove', function (e) {
-    var pointer = pointers[0];
-    if (!pointer.down) { return; }
-    var posX = scaleByPixelRatio(e.offsetX);
-    var posY = scaleByPixelRatio(e.offsetY);
-    updatePointerMoveData(pointer, posX, posY);
+    try{
+        var pointer = pointers[0];
+        if (!pointer.down) { return; }
+        var posX = scaleByPixelRatio(e.offsetX);
+        var posY = scaleByPixelRatio(e.offsetY);
+        updatePointerMoveData(pointer, posX, posY);
+    }catch(e){
+        console.log("warning, fluid not redy yet?: " + e);
+    }
 });
 
 window.addEventListener('mouseup', function () {
@@ -1096,4 +1083,36 @@ function hashCode (s) {
         hash |= 0; // Convert to 32bit integer
     }
     return hash;
+};
+
+function initFluids(width, height) {
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    resizeCanvas();
+    pointers = [];
+    splatStack = [];
+    pointers.push(new pointerPrototype());
+
+    ref = getWebGLContext(canvas);
+    gl = ref.gl;
+    ext = ref.ext;
+
+    if (isMobile()) {
+        config.DYE_RESOLUTION = 512;
+    }
+    if (!ext.supportLinearFiltering) {
+        config.DYE_RESOLUTION = 512;
+        config.SHADING = false;
+        config.BLOOM = false;
+        config.SUNRAYS = false;
+    }
+
+    updateKeywords();
+    initFramebuffers();
+    multipleSplats(parseInt(Math.random() * 20) + 5);
+
+    lastUpdateTime = Date.now();
+    colorUpdateTimer = 0.0;
+    update();
+
 };

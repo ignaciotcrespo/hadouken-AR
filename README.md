@@ -12,11 +12,24 @@ Still a work in progress, but fun enough to give a try ;)
 
 ### Some video samples:
 
+
+#### Using hands detection engine 2
+
+A not-so-good hadouken ;)
+
+![Hadouken](videos/hadouken-engine2.gif)
+
+Be a wizard!
+
+![Hadouken](videos/hand-engine2.gif)
+
+#### Using hands detection engine 1
+
 A very sad hadouken :( 
 
 ![Hadouken](videos/hadouken1.gif)
 
-Fluids with your hands.
+Fluids simulation with your hands.
 
 ![Fluids](videos/fluids.gif)
 
@@ -26,35 +39,61 @@ The settings can be changed in hadouken.js file.
 ```javascript
 const hadouken = {
 
-    // draw a square where a hand is detected
+    // engine used for hands detection.
+    // engine 1 is simple, and can detect many hands, but can not detect fingers.
+    // engine 2 is better, some comments:
+    //      - can detect fingers!
+    //      - issue: detects only one hand.
+    //      - I've decided to draw fluids simulation only when the hand is open, with the fingers up. It has a "wizard" feeling.
+    handsDetectionEngine: 2,
+
+    // engine 1: draw a square where a hand is detected
+    // engine 2: draw a hand skeleton where a hand is detected
     drawHandBox: false,
 
     // black alpha in top of video, to make it darker. Set a lower value to make the video clearer.
     darkLayerOpacity: 0.4,
 
-    // draw fps in top/left corner
+    // hand detection parameters
+    handDetectionModelParams: {
+      flipHorizontal: true,   // flip e.g for video
+
+      // valid only for detection engine 1
+      maxNumBoxes: 1,        // maximum number of boxes to detect
+      iouThreshold: 0.5,      // ioU threshold for non-max suppression
+      scoreThreshold: 0.79,    // confidence threshold for predictions.
+    },
+
+    // draw fps in top/left corner (currently it works only in detection engine 1)
     drawFps: false,
 
     // margin at right of vieo to show the controls to manage the fluid effects.
     rightMarginForControls: 0.20,
 
-    // set here your own callback for hands detector.
-    // the current detector draws the fluid
-    // Parameters: posX, posY
+    // set here your own callback for hands detector, in case you create your own detector.
     handsDetectorCallback: onHandDetected,
-        
-    // hand detection parameters. More info here: [https://github.com/victordibia/handtrack.js]()
-    handDetectionModelParams: {
-      flipHorizontal: true,   // flip video
-      maxNumBoxes: 1,        // maximum number of boxes (hands) to detect
-      iouThreshold: 0.5,      // ioU threshold for non-max suppression
-      scoreThreshold: 0.79,    // confidence threshold for predictions.
-    },
+
+    // set to false to disable fluids
+    drawFluids: true,
+
+    // the callback when the video recording is ready
+    // parameters: width, height
+    onVideoInitialized: handsDetectorVideoInitialized,
 
 }
 ```
 
 ## Engine for hands detection
+
+### Engine 2: detect fingers, allowing to check when the hand is open, etc.
+
+This engine takes longer to load than engine 1, but including fingers detection is a big plus.
+
+Handpose: [https://blog.tensorflow.org/2020/03/face-and-hand-tracking-in-browser-with-mediapipe-and-tensorflowjs.html]
+
+I've modified some parts to optionally draw hand skeletons, and to resize the fluids simulator when the video starts rendering.
+
+### Engine 1: the first approach. Simple, detect many hands, but can not detect fingers
 
 I started the hands detection myself, using tensorflow, but it was very buggy.
 Then I've decided to get help from the community, and found this one and worked a bit better:
@@ -63,7 +102,11 @@ Handtrack.js: [https://github.com/victordibia/handtrack.js]
 
 I've modified some parts to optionally draw the FPS and boxes.
 
-I am trying with another detection engine, looks promising.
+### A quick comparation
+
+Engine 1 | Engine 2
+--- | ---
+![Engine 1](videos/engine1.gif) | ![Engine 2](videos/hand_trimmed.gif)
 
 ## Engine for fluid simulation
 
@@ -71,11 +114,11 @@ WebGL-Fluid-Simulation: [https://paveldogreat.github.io/WebGL-Fluid-Simulation/]
 
 ## Known issues
 
-* The hands detection needs some polishing. In my case it works better with my hands closed. The power of the fist, Sensei!
+* Engine 1: The hands detection needs some polishing. In my case it works better with my hands closed. The power of the fist, Sensei!
 * With the current hands detection engine there is no way to identify which hand was detected, we just get X,Y position.
 * Works better only with one hand.
 * Tested only in Chrome.
-* Using and modified the compressed version of handtrack library. The not-minimized version does not work yet.
+* Using and modified the compressed version of hands detection library. The not-minimized version does not work yet.
 * Works in mobile devices, but SUPER slow
 
 ## License

@@ -25,6 +25,8 @@
 
     <script src="./scripts/ga.js"></script>
 
+    <script src="./scripts/handEngine2/stats.min.js"></script>
+
 </head>
 <body data-new-gr-c-s-check-loaded="14.983.0">
 
@@ -35,23 +37,27 @@
         </div>
     </div>
 
-    <div id="handsRenderLayer" style="z-index: 2; position: absolute; top: 0px; left: 0px;" class="box">
-        <canvas id="canvasHands" class="boxContainer"></canvas>
+    <div id="handsRenderLayer" style="z-index: 2; position: absolute; top: 0px; left: 0px;">
+        <div>
+            <canvas id="canvasHands" width="640" height="500" ></canvas>
+        </div>
     </div>
 
     <div id="darkTransparentLayer" style="z-index:3; position: absolute; top: 0px; left: 0px;" class="box">
         <div style="background: #000000;" class="boxContainer"></div>
     </div>
-    <div id="liquidLayer" style="z-index: 5; position: absolute; top: 0px; left: 0px;" class="box">
-        <canvas id="canvas_liquid" class="boxContainer"></canvas>
+    <div id="liquidLayer" style="z-index: 5; position: absolute; top: 0px; left: 0px;">
+        <canvas id="canvas_liquid"></canvas>
     </div>
 </div>
 
 <script src="./scripts/fluid.js"></script>
 <script src="./scripts/hadouken.js"></script>
 <script src="./scripts/menu.js"></script>
-<script src="./scripts/handtrack.min.js"></script>
+<script src="./scripts/handEngine1/handtrack.min.js"></script>
 
+<script src="./scripts/handEngine2/handpose-config.js"></script>
+<script src="./scripts/handEngine2/demo.5a7766e5.js"></script>
 
 </body>
 </html>

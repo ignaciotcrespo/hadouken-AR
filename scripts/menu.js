@@ -9,7 +9,9 @@ function addHadoukenGui(gui){
 	hadoukenFolder.add(hadouken, 'darkLayerOpacity', 0, 1.0).name('Video Darkness').onFinishChange(updateDarkLayer);
 	hadoukenFolder.add(hadouken, 'drawHandBox', true, false).name('Hand boxes');
 	hadoukenFolder.add(hadouken, 'drawFluids', true, false).name('Hands fluids');
-	hadoukenFolder.add(hadouken, 'drawFps', true, false).name('Draw FPS');
+	if(hadouken.handsDetectionEngine == 1){
+	    hadoukenFolder.add(hadouken, 'drawFps', true, false).name('Draw FPS');
+	}
 //	hadoukenFolder.add(hadouken, 'rightMarginForControls', 0.1, 0.9).name('Margin').onFinishChange(resizeLayers);
 
 	var github = hadoukenFolder.add({ fun : function () {

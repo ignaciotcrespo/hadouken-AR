@@ -2,7 +2,16 @@
 
 const hadouken = {
 
-    // draw a square where a hand is detected
+    // engine used for hands detection.
+    // engine 1 is simple, and can detect many hands, but can not detect fingers.
+    // engine 2 is better, some comments:
+    //      - can detect fingers!
+    //      - issue: detects only one hand.
+    //      - I've decided to draw fluids simulation only when the hand is open, with the fingers up. It has a "wizard" feeling.
+    handsDetectionEngine: 2,
+
+    // engine 1: draw a square where a hand is detected
+    // engine 2: draw a hand skeleton where a hand is detected
     drawHandBox: false,
 
     // black alpha in top of video, to make it darker. Set a lower value to make the video clearer.
@@ -11,47 +20,130 @@ const hadouken = {
     // hand detection parameters
     handDetectionModelParams: {
       flipHorizontal: true,   // flip e.g for video
+
+      // valid only for detection engine 1
       maxNumBoxes: 1,        // maximum number of boxes to detect
       iouThreshold: 0.5,      // ioU threshold for non-max suppression
       scoreThreshold: 0.79,    // confidence threshold for predictions.
     },
 
-    // draw fps in top/left corner
+    // draw fps in top/left corner (currently it works only in detection engine 1)
     drawFps: false,
 
     // margin at right of vieo to show the controls to manage the fluid effects.
     rightMarginForControls: 0.20,
 
-    // set here your own callback for hands detector.
-    // the current detector draws the fluid
-    // Parameters: posX, posY
+    // set here your own callback for hands detector, in case you create your own detector.
     handsDetectorCallback: onHandDetected,
 
     // set to false to disable fluids
     drawFluids: true,
+
+    // the callback when the video recording is ready
+    // parameters: width, height
+    onVideoInitialized: handsDetectorVideoInitialized,
+
 }
 
 // ------ INTERNAL ---------------------------------------------------------------------------------------------------------------------------------------------
 
-const hadoukenVideo = document.querySelector("#videoElement");
-const canvasHands = document.getElementById("canvasHands");
-const contextHands = canvasHands.getContext("2d");
-let handDetectionModel = null;
+var hadoukenVideo;
+var canvasHands;
+var contextHands;
+var handDetectionModel;
+if(hadouken.handsDetectionEngine == 1) {
+    hadoukenVideo = document.querySelector("#videoElement");
+    canvasHands = document.getElementById("canvasHands");
+    contextHands = canvasHands.getContext("2d");
+    handDetectionModel = null;
+}
 
 resizeLayers();
 startWebCamera();
 
-function onHandDetected(posX, posY){
+function handsDetectorVideoInitialized(width, height) {
+    initFluids(width, height);
+}
+
+function onHandDetected(prediction){
+    if(hadouken.handsDetectionEngine == 1) {
+        onHandDetected1(prediction);
+    } else if(hadouken.handsDetectionEngine == 2) {
+        onHandDetected2(prediction);
+    } else {
+        console.log("unknown callback!")
+    }
+}
+
+function onHandDetected1(prediction){
+    var posX = scaleByPixelRatio(parseInt(prediction.bbox[0] + prediction.bbox[2]/2));
+    var posY = scaleByPixelRatio(parseInt(prediction.bbox[1] + prediction.bbox[3]/2));
     if(posX > 0 && posY > 0) {
         //console.log("Predictions: ", posX +","+ posY);
         drawFluid(posX, posY);
     }
 }
 
+// https://github.com/tensorflow/tfjs-models/tree/master/handpose
+//                thumb: [1, 2, 3, 4],
+//                indexFinger: [5, 6, 7, 8],
+//                middleFinger: [9, 10, 11, 12],
+//                ringFinger: [13, 14, 15, 16],
+//                pinky: [17, 18, 19, 20],
+//                palmBase: [0]
+function onHandDetected2(prediction){
+    if(prediction.handInViewConfidence > 0.9) {
+        // draw fluids in base middle finger
+        var posX = scaleByPixelRatio(prediction.annotations.middleFinger[0][0]);
+        var posY = scaleByPixelRatio(prediction.annotations.middleFinger[0][1]);
+
+        // detect open hand
+        if(
+            isFingerOpen(prediction.annotations.middleFinger)
+            && isFingerOpen(prediction.annotations.indexFinger)
+            && isFingerOpen(prediction.annotations.ringFinger)
+//            && isFingerOpen(prediction.annotations.pinky)
+        ){
+            if(posX > 0 && posY > 0) {
+//                console.log("Predictions: ", posX +","+ posY);
+                drawFluid(posX, posY);
+            }
+        }
+    }
+}
+
+function isFingerOpen(finger) {
+    var open = true;
+    var y = finger[0][1];
+    for(var i=1; i<finger.length; i++){
+        var newY = finger[i][1];
+        if(newY > y) {
+            open = false;
+            break;
+        }
+        y = newY;
+    }
+    if(!open){
+        // detect open down. Not useful for hadouken. Detection jumps from one hand to another. Flickering.
+//        open = true;
+//        var y = finger[0][1];
+//        for(var i=1; i<finger.length; i++){
+//            var newY = finger[i][1];
+//            if(newY < y) {
+//                open = false;
+//                break;
+//            }
+//            y = newY;
+//        }
+    }
+    return open;
+}
+
 function resizeLayers() {
     Array.from(document.getElementsByClassName("box")).forEach( box => {
         box.style.width =  ((1 - hadouken.rightMarginForControls) * 100) + "%";
     });
+    // reload fluids, or load it after layers are resized
 }
 
 
@@ -67,32 +159,39 @@ function drawFluid(posX, posY) {
 
 
 function startWebCamera() {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-          initializeWebVideo(stream)
-          startHandsDetection();
-        })
-        .catch(function (err0r) {
-          console.log("Something went wrong! "+ err0r);
-        });
+    if(hadouken.handsDetectionEngine == 1){
+        if (navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+              initializeWebVideo(stream)
+              startHandsDetection();
+            })
+            .catch(function (err0r) {
+              console.log("Something went wrong! "+ err0r);
+            });
+        }
     }
 }
 
 function initializeWebVideo(stream) {
+    var w = window.innerWidth * (1 - hadouken.rightMarginForControls);
+    var h = window.innerHeight;
     hadoukenVideo.srcObject = stream;
-    hadoukenVideo.width =  window.innerWidth * (1 - hadouken.rightMarginForControls);
-    hadoukenVideo.height = window.innerHeight;
+    hadoukenVideo.width =  w;
+    hadoukenVideo.height = h;
     hadoukenVideo.scale = true;
+    hadouken.onVideoInitialized(w, h);
 }
 
 function startHandsDetection(){
-    //Load the hands detection model.
-    handTrack.load(hadouken.handDetectionModelParams).then(model => {
-        // detect objects in the image.
-        handDetectionModel = model
-        runHandsDetectionInCurrentFrame();
-    });
+    if(hadouken.handsDetectionEngine == 1) {
+        //Load the hands detection model.
+        handTrack.load(hadouken.handDetectionModelParams).then(model => {
+            // detect objects in the image.
+            handDetectionModel = model
+            runHandsDetectionInCurrentFrame();
+        });
+    }
 }
 
 function runHandsDetectionInCurrentFrame() {
@@ -101,10 +200,7 @@ function runHandsDetectionInCurrentFrame() {
 
         if(predictions.length > 0){
          for(i=0; i<predictions.length; i++) {
-           // var i=0;
-            var posX = scaleByPixelRatio(parseInt(predictions[i].bbox[0] + predictions[i].bbox[2]/2));
-            var posY = scaleByPixelRatio(parseInt(predictions[i].bbox[1] + predictions[i].bbox[3]/2));
-            hadouken.handsDetectorCallback(posX, posY);
+            hadouken.handsDetectorCallback(predictions[i]);
           }
         }
 
@@ -118,4 +214,3 @@ function updateDarkLayer() {
 }
 
 updateDarkLayer();
-
