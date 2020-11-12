@@ -9,8 +9,13 @@ For instance, the elbows are also detected, works better if your elbow is not vi
 Still a work in progress, but fun enough to give a try ;)
 
 [Live demo here: Engine 2](https://ignaciotcrespo.github.io/hadouken-AR-engine2/)
+In this demo the fluids simulation is drawn only when your hand is open and the fingers pointing up.
 
 [Live demo here: Engine 1](https://ignaciotcrespo.github.io/hadouken-ar/)
+This is the first version, using a library detecting the hands position, but not the fingers.
+
+The authors of these libraries did a great job using tensorflow and mediapipe. To get deeper in the techniques used in this AR experiment, take some minutes to visit the links described below.
+I enjoyed reading it.
 
 ### Some video samples:
 
@@ -20,7 +25,7 @@ A not-so-good hadouken ;)
 
 ![Hadouken](videos/hadouken-engine2.gif)
 
-Be a wizard!
+Be a wizard! Fingers detection is useful to draw the effects only when the hand is open.
 
 ![Hadouken](videos/hand-engine2.gif)
 
@@ -90,7 +95,7 @@ const hadouken = {
 
 This engine takes longer to load than engine 1, but including fingers detection is a big plus.
 
-Handpose: [https://blog.tensorflow.org/2020/03/face-and-hand-tracking-in-browser-with-mediapipe-and-tensorflowjs.html]
+Handpose: <https://blog.tensorflow.org/2020/03/face-and-hand-tracking-in-browser-with-mediapipe-and-tensorflowjs.html>
 
 I've modified some parts to optionally draw hand skeletons, and to resize the fluids simulator when the video starts rendering.
 
@@ -99,7 +104,7 @@ I've modified some parts to optionally draw hand skeletons, and to resize the fl
 I started the hands detection myself, using tensorflow, but it was very buggy.
 Then I've decided to get help from the community, and found this one and worked a bit better:
 
-Handtrack.js: [https://github.com/victordibia/handtrack.js]
+Handtrack.js: <https://github.com/victordibia/handtrack.js>
 
 I've modified some parts to optionally draw the FPS and boxes.
 
@@ -111,7 +116,11 @@ Engine 1 | Engine 2
 
 ## Engine for fluid simulation
 
-WebGL-Fluid-Simulation: [https://paveldogreat.github.io/WebGL-Fluid-Simulation/]
+WebGL-Fluid-Simulation: [https://paveldogreat.github.io/WebGL-Fluid-Simulation/]()
+
+Someone in the office shared this link and I couldn't stop watching it. I love it :)
+And the idea of doing a hadouken with augmented reality is not only mine, there are other devs doing something similar.  
+I've decided to implement my version to learn more about ML, and have fun.
 
 ## Known issues
 
