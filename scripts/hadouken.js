@@ -63,6 +63,7 @@ startWebCamera();
 
 function handsDetectorVideoInitialized(width, height) {
     initFluids(width, height);
+    document.getElementById("messageLayer").outerHTML = ""
 }
 
 function onHandDetected(prediction){
