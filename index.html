@@ -42,8 +42,11 @@
             <canvas id="canvasHands" width="640" height="500" ></canvas>
         </div>
     </div>
+    <div id="faceLayer" style="z-index: 3; position: absolute; top: 0px; left: 0px;">
+        <canvas id="canvas_face" width="1250" height="700"></canvas>
+    </div>
 
-    <div id="darkTransparentLayer" style="z-index:3; position: absolute; top: 0px; left: 0px;" class="box">
+    <div id="darkTransparentLayer" style="z-index:4; position: absolute; top: 0px; left: 0px;" class="box">
         <div style="background: #000000;" class="boxContainer"></div>
     </div>
     <div id="liquidLayer" style="z-index: 5; position: absolute; top: 0px; left: 0px;">
@@ -53,6 +56,10 @@
         <p><font color="#FFFFFF" style="font-size: 30px;">Please grant camera access, and wait some seconds...</font></p>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
 
 <script src="./scripts/fluid.js"></script>
 <script src="./scripts/hadouken.js"></script>

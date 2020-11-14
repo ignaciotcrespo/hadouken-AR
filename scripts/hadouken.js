@@ -36,6 +36,9 @@ const hadouken = {
     // set here your own callback for hands detector, in case you create your own detector.
     handsDetectorCallback: onHandDetected,
 
+    faceDetectorCallback: onFaceDetected,
+    eyes: false,
+
     // set to false to disable fluids
     drawFluids: true,
 
@@ -64,6 +67,54 @@ startWebCamera();
 function handsDetectorVideoInitialized(width, height) {
     initFluids(width, height);
     document.getElementById("messageLayer").outerHTML = ""
+}
+
+var fca = document.getElementById("canvas_face");
+var fcontext = fca.getContext("2d");
+fcontext.fillStyle = "#FF0000";
+
+function onFaceDetected(face){
+    fcontext.clearRect(0, 0, fca.width, fca.height);
+    if(hadouken.eyes){
+//    drawEye(face.annotations.leftEyeUpper0);
+//    drawEye(face.annotations.leftEyeUpper1);
+//    drawEye(face.annotations.leftEyeUpper2);
+    drawEye(face.annotations.leftEyeLower0);
+//    drawEye(face.annotations.leftEyeLower1);
+//    drawEye(face.annotations.leftEyeLower2);
+//    drawEye(face.annotations.leftEyeLower3);
+//    drawEye(face.annotations.leftEyebrowUpper);
+//    drawEye(face.annotations.leftEyebrowLower);
+    
+//    drawEye(face.annotations.rightEyeUpper0);
+//    drawEye(face.annotations.rightEyeUpper1);
+//    drawEye(face.annotations.rightEyeUpper2);
+    drawEye(face.annotations.rightEyeLower0);
+//    drawEye(face.annotations.rightEyeLower1);
+//    drawEye(face.annotations.rightEyeLower2);
+//    drawEye(face.annotations.rightEyeLower3);
+//    drawEye(face.annotations.rightEyebrowUpper);
+//    drawEye(face.annotations.rightEyebrowLower);
+
+//    drawEye(face.annotations.midwayBetweenEyes);
+    }
+}
+
+function clearFaces() {
+    fcontext.clearRect(0, 0, fca.width, fca.height);
+}
+
+function drawEye(eye) {
+    try{
+    //    console.log("face: "+ eye);
+        var posx = parseInt(eye[4][0]);
+        var posy = parseInt(eye[4][1]);
+    //    console.log("face X,Y: "+ posx +","+posy);
+        fcontext.beginPath();
+        fcontext.arc(posx, posy, 2, 0, 2 * Math.PI);
+        fcontext.stroke();
+        fcontext.fill();
+    }catch(e){}
 }
 
 function onHandDetected(prediction){

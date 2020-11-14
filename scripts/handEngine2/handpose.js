@@ -43942,9 +43942,13 @@ parcelRequire = function(e, r, t, n) {
             const e = await S();
             return e.play(), e
         }
+
+        var modelFace;
+
         async function D() {
             let n;
             await t.setBackend(p.backend), O = await e.load();
+             modelFace = await facemesh.load();
             try {
                 n = await q()
             } catch (a) {
@@ -43993,6 +43997,10 @@ parcelRequire = function(e, r, t, n) {
                         d.scale(1, 1);
                      }
                     const n = await O.estimateHands(e, flipVideo);
+                    if(hadouken.eyes) {
+                        const faces = await modelFace.estimateFaces(e, false, flipVideo);
+                        faces.forEach(face => hadouken.faceDetectorCallback(face));
+                    }
                     if (n.length > 0) {
                         try{ hadouken.handsDetectorCallback(n[0]); } catch(e) {}
                         const e = n[0].landmarks;
