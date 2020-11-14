@@ -36,11 +36,11 @@ const hadouken = {
     // set here your own callback for hands detector, in case you create your own detector.
     handsDetectorCallback: onHandDetected,
 
-    // callback for faces detected. Used to darw the eyes
-    faceDetectorCallback: onFaceDetected,
-
     // enable face detection
     eyes: false,
+
+    // callback for faces detected (to draw the eyes when the fluids simulation is active in the hand)
+    faceDetectorCallback: onFaceDetected,
 
     // set to false to disable fluids
     drawFluids: true,

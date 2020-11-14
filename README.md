@@ -17,6 +17,11 @@ This is the first version, using a library detecting the hands position, but not
 The authors of these libraries did a great job using tensorflow and mediapipe. To get deeper in the techniques used in this AR experiment, take some minutes to visit the links described below.
 I enjoyed reading it.
 
+## UPDATE 14/Nov/2020
+
+Added face detection to draw fire in the eyes when the fluids simulation is active in the hand. To enable it check the "Eyes" setting in the menu.
+The render will be slower because hands and face detection will work together.
+
 ### Some video samples:
 
 #### Using hands detection engine 2
@@ -78,6 +83,12 @@ const hadouken = {
 
     // set here your own callback for hands detector, in case you create your own detector.
     handsDetectorCallback: onHandDetected,
+
+    // enable face detection
+    eyes: false,
+
+    // callback for faces detected (to draw the eyes when the fluids simulation is active in the hand)
+    faceDetectorCallback: onFaceDetected,
 
     // set to false to disable fluids
     drawFluids: true,
