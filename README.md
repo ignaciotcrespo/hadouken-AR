@@ -133,6 +133,12 @@ Someone in the office shared this link and I couldn't stop watching it. I love i
 And the idea of doing a hadouken with augmented reality is not only mine, there are other devs doing something similar.  
 I've decided to implement my version to learn more about ML, and have fun.
 
+## Fire particles
+
+For the eyes on fir I've took this small piece of code, simple and good.
+
+<https://codepen.io/davepvm/pen/Hhstl>
+
 ## Known issues
 
 * Engine 1: The hands detection needs some polishing. In my case it works better with my hands closed. The power of the fist, Sensei!
