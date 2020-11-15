@@ -4,7 +4,7 @@
 An interactive AR playground using the camera in your device to detect your hands, drawing a fluid effect where the hand is detected.
 
 The main idea was to create an Augmented Reality hadouken, but the hands detection still needs more work.
-For instance, the elbows are also detected, works better if your elbow is not visible (put your arms straight in front of you).  
+For instance, with the engine 1, the elbows are also detected, works better if your elbow is not visible (put your arms straight in front of you).
 
 Still a work in progress, but fun enough to give a try ;)
 
